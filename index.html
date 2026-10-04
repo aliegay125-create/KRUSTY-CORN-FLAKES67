@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krusty Korn Flakes - Süngerbob'un Favorisi!</title>
+    <!-- Tailwind CSS Yükleniyor -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Open+Sans:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #0077b6; /* Bikini Kasabası denizi mavisi */
+            color: #fff;
+            overflow-x: hidden;
+            /* Su altı dalga deseni */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.05) 3px, transparent 3px);
+            background-size: 50px 50px;
+            cursor: pointer; /* Tıklanabilir hissi vermek için */
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Fredoka One', cursive;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .spongebob-yellow {
+            color: #ffeb3b;
+            text-shadow: 2px 2px 0px #d4af37, 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        .patrick-pink {
+            color: #ff80ab;
+        }
+
+        /* Ekrana tıklayınca çıkan emojiler için animasyon */
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5) rotate(45deg); opacity: 0; }
+        }
+
+        .emoji-pop {
+            position: absolute;
+            font-size: 2rem;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 50;
+        }
+
+        /* Yengeç Burger kutusu stili (Ürün kartı) */
+        .product-card {
+            background: linear-gradient(135deg, #fdd835 0%, #fbc02d 100%);
+            border: 4px solid #c0ca33;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: scale(1.02);
+        }
+
+        /* Özel düğme stili */
+        .btn-krusty {
+            background-color: #d32f2f; /* Bay Yengeç kırmızısı */
+            color: white;
+            border: 2px solid #b71c1c;
+            border-radius: 9999px;
+            font-family: 'Fredoka One', cursive;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .btn-krusty:hover {
+            background-color: #f44336;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        }
+        .btn-krusty:active {
+            transform: translateY(0);
+        }
+
+        /* Baloncuk animasyonları */
+        .bubbles {
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+            z-index: -1;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+        }
+
+        .bubble {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+
+        .bubble:nth-child(1) { animation-duration: 8s; left: 10%; }
+        .bubble:nth-child(2) { animation-duration: 12s; left: 30%; width: 30px; height: 30px; animation-delay: 2s;}
+        .bubble:nth-child(3) { animation-duration: 6s; left: 50%; }
+        .bubble:nth-child(4) { animation-duration: 10s; left: 70%; width: 15px; height: 15px; animation-delay: 1s;}
+        .bubble:nth-child(5) { animation-duration: 9s; left: 90%; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <div class="bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <header class="p-4 bg-black bg-opacity-30 backdrop-blur-sm sticky top-0 z-40 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl sm:text-4xl spongebob-yellow tracking-wider cursor-pointer select-none">
+                <span class="text-xl">⭐</span> Krusty Korn Flakes
+            </h1>
+            <button id="musicToggle" class="btn-krusty px-4 py-2 text-sm sm:text-base flex items-center gap-2">
+                🎵 <span id="musicStatus">Müziği Aç</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
+        
+        <div class="mb-8 relative inline-block">
+            <!-- Mısır Gevreği Kasesi İllüstrasyonu (SVG) -->
+            <svg viewBox="0 0 200 150" class="w-64 h-64 sm:w-80 sm:h-80 drop-shadow-2xl mx-auto" xmlns="http://www.w3.org/2000/svg">
+                <!-- Kase -->
+                <path d="M20,75 Q100,150 180,75 L160,50 Q100,70 40,50 Z" fill="#e0e0e0" stroke="#9e9e9e" stroke-width="3"/>
+                <!-- Süt Dalgası -->
+                <path d="M30,65 Q70,85 100,60 T170,65 Q130,85 100,70 T30,65 Z" fill="#ffffff" opacity="0.9"/>
+                <!-- Mısır Gevrekleri (Kare süngerler) -->
+                <rect x="70" y="55" width="15" height="15" fill="#ffeb3b" stroke="#fbc02d" stroke-width="2" transform="rotate(15 77 62)"/>
+                <rect x="110" y="45" width="18" height="18" fill="#ffeb3b" stroke="#fbc02d" stroke-width="2" transform="rotate(-10 119 54)"/>
+                <rect x="90" y="65" width="14" height="14" fill="#ffeb3b" stroke="#fbc02d" stroke-width="2" transform="rotate(45 97 72)"/>
+                <rect x="135" y="58" width="16" height="16" fill="#ffeb3b" stroke="#fbc02d" stroke-width="2" transform="rotate(5 143 66)"/>
+                <rect x="50" y="50" width="12" height="12" fill="#ffeb3b" stroke="#fbc02d" stroke-width="2" transform="rotate(-25 56 56)"/>
+                
+                <!-- Küçük Yıldızlar (Patrick esintisi) -->
+                <polygon points="100,30 102,36 108,36 103,40 105,46 100,42 95,46 97,40 92,36 98,36" fill="#ff80ab"/>
+                <polygon points="60,40 61,43 64,43 62,45 63,48 60,46 57,48 58,45 56,43 59,43" fill="#ff80ab"/>
+                
+                <!-- Buhar/Koku -->
+                <path d="M80,30 Q90,10 80,-10" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+                <path d="M120,25 Q130,5 120,-15" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+            </svg>
+            
+            <div class="absolute -top-4 -right-4 bg-red-500 text-white font-bold py-2 px-4 rounded-full shadow-lg transform rotate-12 brand-font text-lg border-2 border-white">
+                %100<br>Okyanus<br>Lezzeti!
+            </div>
+        </div>
+
+        <h2 class="text-4xl sm:text-5xl font-bold mb-4 text-white leading-tight">
+            Güne <span class="spongebob-yellow">Sünger</span> Gibi Başla!
+        </h2>
+        
+        <p class="text-lg sm:text-xl text-blue-100 max-w-md mx-auto mb-8 font-semibold leading-relaxed">
+            Bikini Kasabası'nın en çıtır, en kaliteli ve en eğlenceli mısır gevreği! 
+            Her lokmada Yengeç Burger formülünün gizli sırrını arayacaksınız.
+            <span class="block mt-2 text-sm text-blue-200">(Tarif Plankton'dan özenle korunmaktadır 🦀)</span>
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl mb-12">
+            <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm border border-blue-300 border-opacity-30">
+                <div class="text-4xl mb-3">🧽</div>
+                <h3 class="text-xl font-bold mb-2 text-yellow-300">Süper Emici Lezzet</h3>
+                <p class="text-sm text-blue-100">Sütü sünger gibi çeker, son lokmaya kadar çıtırlığını korur.</p>
+            </div>
+            <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm border border-blue-300 border-opacity-30">
+                <div class="text-4xl mb-3">🏆</div>
+                <h3 class="text-xl font-bold mb-2 text-yellow-300">Premium Kalite</h3>
+                <p class="text-sm text-blue-100">Okyanusun en taze mısırlarından, özenle fırınlanmış profesyonel üretim.</p>
+            </div>
+            <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm border border-blue-300 border-opacity-30">
+                <div class="text-4xl mb-3">🍍</div>
+                <h3 class="text-xl font-bold mb-2 text-yellow-300">Ananas Aromalı</h3>
+                <p class="text-sm text-blue-100">Denizin dibindeki o meşhur evin tropikal kokusu her kasede.</p>
+            </div>
+        </div>
+
+        <div class="product-card p-6 sm:p-8 w-full max-w-md mx-auto text-gray-900 relative">
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white px-6 py-2 rounded-full border-4 border-yellow-400 font-bold brand-font shadow-lg whitespace-nowrap">
+                Sınırlı Üretim!
+            </div>
+            <h3 class="text-3xl brand-font text-center mt-4 mb-2 text-red-600">Krusty Korn Flakes</h3>
+            <p class="text-center font-bold text-lg mb-6 opacity-80">Mega Boy Kutu (500g)</p>
+            
+            <ul class="text-left font-semibold space-y-3 mb-8">
+                <li class="flex items-center gap-2"><span>✅</span> Ekstra Vitaminli (Deniz Yıldızı Özü)</li>
+                <li class="flex items-center gap-2"><span>✅</span> Renklendirici İçermez</li>
+                <li class="flex items-center gap-2"><span>✅</span> %100 Eğlence Garantili</li>
+            </ul>
+            
+            <div class="text-center mb-6">
+                <span class="text-4xl brand-font text-red-600">₺99.90</span>
+            </div>
+            
+            <button class="w-full btn-krusty py-4 text-xl tracking-wide flex justify-center items-center gap-2" onclick="orderCereal()">
+                <span>🛒</span> Sepete Ekle
+            </button>
+        </div>
+        
+        <p class="mt-12 text-sm text-blue-200 italic animate-pulse">
+            İpucu: Ekrana tıklayarak eğlenceyi başlat!
+        </p>
+
+    </main>
+
+    <footer class="p-6 text-center text-blue-300 text-sm mt-auto bg-black bg-opacity-40">
+        <p>&copy; 2026 Krusty Krab A.Ş. Tüm hakları saklıdır.</p>
+        <p class="mt-2 text-xs">Bu site sadece eğlence amaçlıdır. Bay Yengeç parayı çok sever. 💸</p>
+    </footer>
+
+    <!-- Arka plan müziği için Tone.js (Sadeleştirilmiş bir melodi çalacağız) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script>
+        const emojis = ["🍔", "🌽", "🦞", "🧽", "⭐", "🥨", "🍍", "🦀", "🦑"];
+        
+        // Ekrana tıklayınca emoji çıkarma fonksiyonu
+        document.body.addEventListener('click', function(e) {
+            // Sepete Ekle butonuna tıklanırsa emoji çıkmasın
+            if(e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+
+            const emojiEl = document.createElement('div');
+            emojiEl.className = 'emoji-pop';
+            
+            // Rastgele emoji seçimi
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            emojiEl.innerText = randomEmoji;
+            
+            // Tıklanan konuma yerleştirme (Fare veya Dokunma)
+            const x = e.clientX || e.touches?.[0].clientX;
+            const y = e.clientY || e.touches?.[0].clientY;
+            
+            emojiEl.style.left = `${x - 20}px`; // Ortalama
+            emojiEl.style.top = `${y - 20}px`;
+            
+            document.body.appendChild(emojiEl);
+            
+            // Animasyon bitince elementi temizle
+            setTimeout(() => {
+                emojiEl.remove();
+            }, 1000);
+        });
+
+        // Satın alma butonu mesajı
+        function orderCereal() {
+            const messageBox = document.createElement('div');
+            messageBox.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-gray-900 p-6 rounded-xl shadow-2xl z-50 text-center border-4 border-yellow-400 max-w-sm w-11/12';
+            messageBox.innerHTML = `
+                <div class="text-5xl mb-4">🦀</div>
+                <h3 class="text-2xl brand-font text-red-600 mb-2">Teşekkürler!</h3>
+                <p class="font-bold mb-4">Bay Yengeç paranızı çok sevdi! Siparişiniz denizaltı postasıyla yola çıkıyor.</p>
+                <button class="btn-krusty px-6 py-2" onclick="this.parentElement.remove()">Kapat</button>
+            `;
+            document.body.appendChild(messageBox);
+        }
+
+        // --- Tone.js ile Basit Süngerbob Temalı Melodi (Ukulele/Keman hissi) ---
+        let isMusicPlaying = false;
+        let synth;
+        let loop;
+
+        const musicToggleBtn = document.getElementById('musicToggle');
+        const musicStatusText = document.getElementById('musicStatus');
+
+        // Basit bir denizci/Süngerbob benzeri melodi notaları
+        const melody = [
+            {"time": "0:0:0", "note": "G4", "dur": "8n"},
+            {"time": "0:0:2", "note": "B4", "dur": "8n"},
+            {"time": "0:1:0", "note": "D5", "dur": "4n"},
+            {"time": "0:2:0", "note": "G5", "dur": "8n"},
+            {"time": "0:2:2", "note": "F#5", "dur": "8n"},
+            {"time": "0:3:0", "note": "E5", "dur": "4n"},
+            {"time": "1:0:0", "note": "D5", "dur": "8n"},
+            {"time": "1:0:2", "note": "B4", "dur": "8n"},
+            {"time": "1:1:0", "note": "G4", "dur": "4n"},
+        ];
+
+        async function initAudio() {
+            if (!synth) {
+                await Tone.start();
+                // Eğlenceli, biraz "ıslak" bir ses sentezleyici
+                synth = new Tone.Synth({
+                    oscillator: { type: "triangle" },
+                    envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1 }
+                }).toDestination();
+
+                // Yankı efekti ekleyelim ki su altındaymış gibi hissedilsin
+                const reverb = new Tone.Reverb({
+                    decay: 1.5,
+                    wet: 0.3
+                }).toDestination();
+                synth.connect(reverb);
+
+                const part = new Tone.Part((time, value) => {
+                    synth.triggerAttackRelease(value.note, value.dur, time);
+                }, melody).start(0);
+                
+                part.loop = true;
+                part.loopEnd = "2m"; // 2 ölçüde bir tekrarla
+                
+                Tone.Transport.bpm.value = 120;
+            }
+        }
